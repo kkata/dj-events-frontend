@@ -1,4 +1,6 @@
 import Head from "next/head";
+import Header from "./Header";
+import Footer from "./Footer";
 import styles from "../styles/Layout.module.css";
 
 type Props = {
@@ -22,7 +24,10 @@ export default function Layout({
         <meta name="description" content={description} />
         <title>{title}</title>
       </Head>
+
+      <Header />
       <div className={styles.container}>{children}</div>
+      <Footer />
     </div>
   );
 }
