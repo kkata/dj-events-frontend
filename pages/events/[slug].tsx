@@ -1,12 +1,50 @@
+import { FaPencilAlt, FaTimes } from "react-icons/fa";
+import Link from "next/link";
+import Image from "next/image";
 import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
+
+import styles from "@/styles/Event.module.css";
 
 import { Data } from "type";
 
 export default function Event({ evt }: { evt: Data }) {
+  const deleteEvent = (e: React.MouseEvent) => {
+    console.log("delete");
+  };
+
   return (
     <Layout>
-      <h1>{evt.name}</h1>
+      <div className={styles.event}>
+        <div className={styles.controls}>
+          <Link href={`/events/edit/${evt.id}`}>
+            <FaPencilAlt /> Event Edit
+          </Link>
+          <button className={styles.delete} onClick={deleteEvent}>
+            <FaTimes /> Delete Event
+          </button>
+        </div>
+
+        <span>
+          {evt.date} at {evt.time}
+        </span>
+        <h1>{evt.name}</h1>
+        {evt.image && (
+          <div className={styles.image}>
+            <Image src={evt.image} width={900} height={600} alt="" />
+          </div>
+        )}
+        <h2>Performers:</h2>
+        <p>{evt.performers}</p>
+        <h2>Description:</h2>
+        <p>{evt.description}</p>
+        <h2>Venue: {evt.venue}</h2>
+        <p>{evt.address}</p>
+
+        <Link href="/events" className={styles.back}>
+          {"<"} Go Back
+        </Link>
+      </div>
     </Layout>
   );
 }
