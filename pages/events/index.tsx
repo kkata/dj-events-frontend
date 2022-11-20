@@ -21,7 +21,7 @@ const Events = ({ events }: { events: Data[] }) => {
 export const getStaticProps = async (): Promise<
   GetStaticPropsResult<{ events: Data[] }>
 > => {
-  const res = await fetch(`${API_URL}/api/events`);
+  const res = await fetch(`${API_URL}/events?_sort=date:ASC`);
   const events = await res.json();
 
   return {
