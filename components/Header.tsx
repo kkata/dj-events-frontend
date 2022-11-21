@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Search from "./Search";
 import styles from "@/styles/Header.module.css";
 
 export default function Header() {
@@ -7,6 +8,8 @@ export default function Header() {
       <div className={styles.logo}>
         <Link href="/">My Site</Link>
       </div>
+
+      <Search />
 
       <nav>
         <ul>
