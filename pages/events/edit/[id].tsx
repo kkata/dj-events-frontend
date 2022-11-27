@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/Layout";
 import Modal from "@/components/Modal";
+import ImageUpload from "@/components/ImageUpload";
 import { API_URL } from "@/config/index";
 
 import { Data } from "../../../type";
@@ -64,6 +65,14 @@ export default function EditEvent({ evt }: { evt: Data }) {
   ) => {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
+  };
+
+  const imageUploaded = async () => {
+    const res = await fetch(`${API_URL}/events/${evt.id}`);
+    const data = await res.json();
+
+    setImagePreview(data.image.formats.thumbnail.url);
+    setShowModal(false);
   };
 
   return (
@@ -164,7 +173,7 @@ export default function EditEvent({ evt }: { evt: Data }) {
       </div>
 
       <Modal show={showModal} onClose={() => setShowModal(false)} title="">
-        IMAGE UPLOAD
+        <ImageUpload evtId={evt.id} imageUploaded={imageUploaded} />
       </Modal>
     </Layout>
   );
