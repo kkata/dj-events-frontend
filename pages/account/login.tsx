@@ -4,15 +4,18 @@ import "react-toastify/dist/ReactToastify.css";
 import React, { useState, useEffect, useContext } from "react";
 import Link from "next/link";
 import Layout from "@/components/Layout";
+import { useAuthCtx } from "@/context/AuthContext";
 import styles from "@/styles/AuthForm.module.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { login, error } = useAuthCtx();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ email, password });
+    login({ email, password });
   };
 
   return (
