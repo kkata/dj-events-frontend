@@ -1,7 +1,7 @@
 import { FaUser } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Layout from "@/components/Layout";
 import { useAuthCtx } from "@/context/AuthContext";
@@ -12,6 +12,10 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const { login, error } = useAuthCtx();
+
+  useEffect(() => {
+    error && toast.error(error);
+  }, [error]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

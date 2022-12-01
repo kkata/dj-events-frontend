@@ -1,6 +1,6 @@
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, ReactNode, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
-import { API_URL } from "@/config/index";
+import { NEXT_URL } from "@/config/index";
 import { createCtx } from "./utils";
 
 type User = {
@@ -36,16 +36,36 @@ export const AuthProvider = (props: { children: ReactNode }) => {
   };
 
   // Login user
-  const login = async ({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }) => {
-    const identifier = email;
-    console.log("login", { identifier, password });
-  };
+  // Optimizing re-renders with useCallback and useMemo
+  // ref. https://beta.reactjs.org/apis/react/useContext#optimizing-re-renders-when-passing-objects-and-functions
+  const login = useCallback(
+    async ({ email, password }: { email: string; password: string }) => {
+      const identifier = email;
+
+      const res = await fetch(`${NEXT_URL}/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identifier,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      console.log(data);
+
+      if (res.ok) {
+        setUser(data.user);
+      } else {
+        setError(data.message);
+        // setError(null);
+      }
+    },
+    []
+  );
 
   // Logout user
   const logout = async () => {
@@ -57,11 +77,19 @@ export const AuthProvider = (props: { children: ReactNode }) => {
     console.log("checkUserLoggedIn");
   };
 
+  const contextValue = useMemo(
+    () => ({
+      user,
+      error,
+      login,
+      register,
+      logout,
+      checkUserLoggedIn,
+    }),
+    [user, error, login]
+  );
+
   return (
-    <AuthCtxProvider
-      value={{ user, error, register, login, logout, checkUserLoggedIn }}
-    >
-      {props.children}
-    </AuthCtxProvider>
+    <AuthCtxProvider value={contextValue}>{props.children}</AuthCtxProvider>
   );
 };
