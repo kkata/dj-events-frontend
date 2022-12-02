@@ -21,7 +21,7 @@ type AuthContextType = {
   }) => Promise<void>;
   register: (user: User) => Promise<void>;
   logout: () => void;
-  checkUserLoggedIn: (user: User) => Promise<void>;
+  checkUserLoggedIn: () => Promise<void>;
 };
 
 export const [useAuthCtx, AuthCtxProvider] = createCtx<AuthContextType>();
@@ -29,6 +29,12 @@ export const [useAuthCtx, AuthCtxProvider] = createCtx<AuthContextType>();
 export const AuthProvider = (props: { children: ReactNode }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    checkUserLoggedIn();
+  }, []);
 
   // Register user
   const register = async (user: User) => {
@@ -57,12 +63,13 @@ export const AuthProvider = (props: { children: ReactNode }) => {
 
       if (res.ok) {
         setUser(data.user);
+        router.push("/account/dashboard");
       } else {
         setError(data.message);
         // setError(null);
       }
     },
-    []
+    [router]
   );
 
   // Logout user
@@ -71,8 +78,15 @@ export const AuthProvider = (props: { children: ReactNode }) => {
   };
 
   // Check if user is logged in
-  const checkUserLoggedIn = async (user: User) => {
-    console.log("checkUserLoggedIn");
+  const checkUserLoggedIn = async () => {
+    const res = await fetch(`${NEXT_URL}/api/user`);
+    const data = await res.json();
+
+    if (res.ok) {
+      setUser(data.user);
+    } else {
+      setUser(null);
+    }
   };
 
   const contextValue = useMemo(
