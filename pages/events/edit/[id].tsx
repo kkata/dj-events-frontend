@@ -12,6 +12,7 @@ import ImageUpload from "@/components/ImageUpload";
 import { API_URL } from "@/config/index";
 
 import { Data } from "../../../type";
+import type { NextApiRequest } from "next";
 
 import styles from "@/styles/Form.module.css";
 
@@ -181,11 +182,15 @@ export default function EditEvent({ evt }: { evt: Data }) {
 
 export async function getServerSideProps({
   params: { id },
+  req,
 }: {
   params: { id: Data["id"] };
+  req: NextApiRequest;
 }) {
   const res = await fetch(`${API_URL}/events/${id}`);
   const evt = await res.json();
+
+  console.log(req.headers.cookie);
 
   return {
     props: {

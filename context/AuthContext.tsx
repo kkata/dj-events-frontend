@@ -55,8 +55,6 @@ export const AuthProvider = (props: { children: ReactNode }) => {
 
       const data = await res.json();
 
-      console.log(data);
-
       if (res.ok) {
         setUser(data.user);
       } else {
