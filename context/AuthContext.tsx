@@ -73,9 +73,16 @@ export const AuthProvider = (props: { children: ReactNode }) => {
   );
 
   // Logout user
-  const logout = async () => {
-    console.log("logout");
-  };
+  const logout = useCallback(async () => {
+    const res = await fetch(`${NEXT_URL}/api/logout`, {
+      method: "POST",
+    });
+
+    if (res.ok) {
+      setUser(null);
+      router.push("/");
+    }
+  }, [router]);
 
   // Check if user is logged in
   const checkUserLoggedIn = async () => {
@@ -98,7 +105,7 @@ export const AuthProvider = (props: { children: ReactNode }) => {
       logout,
       checkUserLoggedIn,
     }),
-    [user, error, login]
+    [user, error, login, logout]
   );
 
   return (
