@@ -16,6 +16,10 @@ export default function Register() {
 
   const { register, error } = useAuthCtx();
 
+  useEffect(() => {
+    error && toast.error(error);
+  }, [error]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -72,7 +76,7 @@ export default function Register() {
             />
           </div>
 
-          <input type="submit" value="Login" className="btn" />
+          <input type="submit" value="Register" className="btn" />
         </form>
 
         <p>

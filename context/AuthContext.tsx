@@ -37,9 +37,28 @@ export const AuthProvider = (props: { children: ReactNode }) => {
   }, []);
 
   // Register user
-  const register = async (user: User) => {
-    console.log("register", user);
-  };
+  const register = useCallback(
+    async (user: User) => {
+      const res = await fetch(`${NEXT_URL}/api/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setUser(data.user);
+        router.push("/account/dashboard");
+      } else {
+        setError(data.message);
+        // setError(null);
+      }
+    },
+    [router]
+  );
 
   // Login user
   // Optimizing re-renders with useCallback and useMemo
@@ -105,7 +124,7 @@ export const AuthProvider = (props: { children: ReactNode }) => {
       logout,
       checkUserLoggedIn,
     }),
-    [user, error, login, logout]
+    [user, error, login, register, logout]
   );
 
   return (
